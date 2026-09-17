@@ -45,6 +45,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth  \u003c-- NUEVA LÍNEA AÑADIDA": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -72,12 +77,23 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/models.Cliente"
                         }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIError"
+                        }
                     }
                 }
             }
         },
         "/clientes/masivo": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth  \u003c-- NUEVA LÍNEA AÑADIDA": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -109,12 +125,23 @@ const docTemplate = `{
                             "type": "object",
                             "additionalProperties": true
                         }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIError"
+                        }
                     }
                 }
             }
         },
         "/clientes/{id}": {
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth  \u003c-- NUEVA LÍNEA AÑADIDA": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -149,10 +176,21 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/models.Cliente"
                         }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIError"
+                        }
                     }
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth  \u003c-- NUEVA LÍNEA AÑADIDA": []
+                    }
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -175,6 +213,12 @@ const docTemplate = `{
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.APIError"
                         }
                     }
                 }
@@ -201,6 +245,30 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        },
+        "utils.APIError": {
+            "type": "object",
+            "properties": {
+                "detail": {
+                    "type": "string",
+                    "example": "El campo 'email' es obligatorio"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Datos de entrada inválidos"
+                },
+                "status": {
+                    "type": "integer",
+                    "example": 400
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "X-API-Key",
+            "in": "header"
         }
     }
 }`

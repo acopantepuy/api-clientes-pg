@@ -16,6 +16,9 @@ import (
 // @description API refactorizada usando MVC.
 // @host localhost:8080
 // @BasePath /
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name X-API-Key
 func main() {
 	// 1. Cargar variables de entorno
 	if err := godotenv.Load(); err != nil {

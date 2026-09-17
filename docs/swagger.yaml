@@ -13,6 +13,18 @@ definitions:
       telefono:
         type: string
     type: object
+  utils.APIError:
+    properties:
+      detail:
+        example: El campo 'email' es obligatorio
+        type: string
+      message:
+        example: Datos de entrada inválidos
+        type: string
+      status:
+        example: 400
+        type: integer
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -56,6 +68,12 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/models.Cliente'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.APIError'
+      security:
+      - ApiKeyAuth  <-- NUEVA LÍNEA AÑADIDA: []
       summary: Agregar un cliente
       tags:
       - clientes
@@ -75,6 +93,12 @@ paths:
           schema:
             additionalProperties: true
             type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.APIError'
+      security:
+      - ApiKeyAuth  <-- NUEVA LÍNEA AÑADIDA: []
       summary: Eliminar un cliente
       tags:
       - clientes
@@ -100,6 +124,12 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.Cliente'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.APIError'
+      security:
+      - ApiKeyAuth  <-- NUEVA LÍNEA AÑADIDA: []
       summary: Actualizar un cliente
       tags:
       - clientes
@@ -124,7 +154,18 @@ paths:
           schema:
             additionalProperties: true
             type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.APIError'
+      security:
+      - ApiKeyAuth  <-- NUEVA LÍNEA AÑADIDA: []
       summary: Agregar masivo
       tags:
       - clientes
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: X-API-Key
+    type: apiKey
 swagger: "2.0"

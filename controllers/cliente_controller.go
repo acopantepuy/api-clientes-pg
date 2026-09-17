@@ -1,10 +1,12 @@
 package controllers
 
 import (
-    "net/http"
+	"net/http"
 
-    "api-clientes-pg/models" // Importamos nuestros modelos
-    "github.com/gin-gonic/gin"
+	"api-clientes-pg/models" // Importamos nuestros modelos
+	"api-clientes-pg/utils"
+
+	"github.com/gin-gonic/gin"
 )
 
 // GetClientes godoc
@@ -15,16 +17,16 @@ import (
 // @Success 200 {array} models.Cliente
 // @Router /clientes [get]
 func GetClientes(c *gin.Context) {
-    var clientes []models.Cliente
-    empresa := c.Query("empresa")
+	var clientes []models.Cliente
+	empresa := c.Query("empresa")
 
-    query := models.DB
-    if empresa != "" {
-        query = query.Where("empresa = ?", empresa)
-    }
-    
-    query.Find(&clientes)
-    c.JSON(http.StatusOK, clientes)
+	query := models.DB
+	if empresa != "" {
+		query = query.Where("empresa = ?", empresa)
+	}
+
+	query.Find(&clientes)
+	c.JSON(http.StatusOK, clientes)
 }
 
 // CreateCliente godoc
@@ -34,15 +36,22 @@ func GetClientes(c *gin.Context) {
 // @Produce json
 // @Param cliente body models.Cliente true "Datos del cliente"
 // @Success 201 {object} models.Cliente
+// @Failure 400 {object} utils.APIError  <-- Swagger ahora sabe que el error 400 usa esta estructura
 // @Router /clientes [post]
+// @Security ApiKeyAuth  <-- NUEVA LÍNEA AÑADIDA
 func CreateCliente(c *gin.Context) {
-    var cliente models.Cliente
-    if err := c.ShouldBindJSON(&cliente); err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-        return
-    }
-    models.DB.Create(&cliente)
-    c.JSON(http.StatusCreated, cliente)
+	var cliente models.Cliente
+	if err := c.ShouldBindJSON(&cliente); err != nil {
+		// Implementación del error estándar
+		c.JSON(http.StatusBadRequest, utils.APIError{
+			Status:  http.StatusBadRequest,
+			Message: "No se pudo procesar la solicitud",
+			Detail:  err.Error(), // Aquí pasamos el error técnico real
+		})
+		return
+	}
+	models.DB.Create(&cliente)
+	c.JSON(http.StatusCreated, cliente)
 }
 
 // CreateClientesMasivo godoc
@@ -52,15 +61,22 @@ func CreateCliente(c *gin.Context) {
 // @Produce json
 // @Param clientes body []models.Cliente true "Array de clientes"
 // @Success 201 {object} map[string]interface{}
+// @Failure 400 {object} utils.APIError  <-- Swagger ahora sabe que el error 400 usa esta estructura
 // @Router /clientes/masivo [post]
+// @Security ApiKeyAuth  <-- NUEVA LÍNEA AÑADIDA
 func CreateClientesMasivo(c *gin.Context) {
-    var clientes []models.Cliente
-    if err := c.ShouldBindJSON(&clientes); err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-        return
-    }
-    models.DB.Create(&clientes) 
-    c.JSON(http.StatusCreated, gin.H{"mensaje": "Creados", "cantidad": len(clientes)})
+	var clientes []models.Cliente
+	if err := c.ShouldBindJSON(&clientes); err != nil {
+		// Implementación del error estándar
+		c.JSON(http.StatusBadRequest, utils.APIError{
+			Status:  http.StatusBadRequest,
+			Message: "No se pudo procesar la solicitud",
+			Detail:  err.Error(), // Aquí pasamos el error técnico real
+		})
+		return
+	}
+	models.DB.Create(&clientes)
+	c.JSON(http.StatusCreated, gin.H{"mensaje": "Creados", "cantidad": len(clientes)})
 }
 
 // UpdateCliente godoc
@@ -71,21 +87,33 @@ func CreateClientesMasivo(c *gin.Context) {
 // @Param id path int true "ID"
 // @Param cliente body models.Cliente true "Datos"
 // @Success 200 {object} models.Cliente
+// @Failure 400 {object} utils.APIError  <-- Swagger ahora sabe que el error 400 usa esta estructura
 // @Router /clientes/{id} [put]
+// @Security ApiKeyAuth  <-- NUEVA LÍNEA AÑADIDA
 func UpdateCliente(c *gin.Context) {
-    id := c.Param("id")
-    var cliente models.Cliente
-    
-    if err := models.DB.First(&cliente, id).Error; err != nil {
-        c.JSON(http.StatusNotFound, gin.H{"error": "No encontrado"})
-        return
-    }
-    if err := c.ShouldBindJSON(&cliente); err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-        return
-    }
-    models.DB.Save(&cliente)
-    c.JSON(http.StatusOK, cliente)
+	id := c.Param("id")
+	var cliente models.Cliente
+
+	if err := models.DB.First(&cliente, id).Error; err != nil {
+		// Implementación del error estándar
+		c.JSON(http.StatusBadRequest, utils.APIError{
+			Status:  http.StatusBadRequest,
+			Message: "No se pudo procesar la solicitud",
+			Detail:  err.Error(), // Aquí pasamos el error técnico real
+		})
+		return
+	}
+	if err := c.ShouldBindJSON(&cliente); err != nil {
+		// Implementación del error estándar
+		c.JSON(http.StatusBadRequest, utils.APIError{
+			Status:  http.StatusBadRequest,
+			Message: "No se pudo procesar la solicitud",
+			Detail:  err.Error(), // Aquí pasamos el error técnico real
+		})
+		return
+	}
+	models.DB.Save(&cliente)
+	c.JSON(http.StatusOK, cliente)
 }
 
 // DeleteCliente godoc
@@ -94,12 +122,19 @@ func UpdateCliente(c *gin.Context) {
 // @Produce json
 // @Param id path int true "ID"
 // @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} utils.APIError  <-- Swagger ahora sabe que el error 400 usa esta estructura
 // @Router /clientes/{id} [delete]
+// @Security ApiKeyAuth  <-- NUEVA LÍNEA AÑADIDA
 func DeleteCliente(c *gin.Context) {
-    id := c.Param("id")
-    if err := models.DB.Delete(&models.Cliente{}, id).Error; err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al eliminar"})
-        return
-    }
-    c.JSON(http.StatusOK, gin.H{"mensaje": "Eliminado"})
+	id := c.Param("id")
+	if err := models.DB.Delete(&models.Cliente{}, id).Error; err != nil {
+		// Implementación del error estándar
+		c.JSON(http.StatusBadRequest, utils.APIError{
+			Status:  http.StatusBadRequest,
+			Message: "Error al eliminar el cliente",
+			Detail:  err.Error(), // Aquí pasamos el error técnico real
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"mensaje": "Eliminado"})
 }
