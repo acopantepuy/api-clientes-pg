@@ -1,10 +1,13 @@
 package main
 
 import (
-    "log"
+    "fmt"
+	"log"
     "net/http"
+	"os" //Permite leer variables del sistema operativo
 
     "github.com/gin-gonic/gin"
+	"github.com/joho/godotenv" // Importamos godotenv
     "gorm.io/driver/postgres" // <-- Nuevo driver
     "gorm.io/gorm"
 
@@ -24,18 +27,31 @@ type Cliente struct {
 var db *gorm.DB
 
 func initDB() {
-	// Cadena de conexión a PostgreSQL
-	dsn := "host=localhost user=postgres password=Lcembcs38j dbname=clientes_db port=5432 sslmode=disable TimeZone=America/Caracas"
+    // 1. Cargar el archivo .env
+    if err := godotenv.Load(); err != nil {
+        log.Println("Advertencia: No se encontró el archivo .env, usando variables de entorno del sistema")
+    }
 
-	var err error
-	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if err != nil {
-		log.Fatal("Error al conectar a PostgreSQL: ", err)
-	}
+    // 2. Leer las variables
+    host := os.Getenv("DB_HOST")
+    user := os.Getenv("DB_USER")
+    password := os.Getenv("DB_PASSWORD")
+    dbname := os.Getenv("DB_NAME")
+    port := os.Getenv("DB_PORT")
 
-	// Crea la tabla 'clientes' automáticamente si no existe
-	db.AutoMigrate(&Cliente{})
-	log.Println("Base de datos PostgreSQL conectada y migrada")
+    // 3. Construir el DSN dinámicamente
+    dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=America/Caracas", 
+        host, user, password, dbname, port)
+    
+    // 4. Conectar a PostgreSQL
+    var err error
+    db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+    if err != nil {
+        log.Fatal("Error al conectar a PostgreSQL: ", err)
+    }
+    
+    db.AutoMigrate(&Cliente{}) 
+    log.Println("Base de datos conectada exitosamente")
 }
 
 // GetClientes godoc
