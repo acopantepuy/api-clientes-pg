@@ -1,0 +1,135 @@
+basePath: /
+definitions:
+  main.Cliente:
+    properties:
+      email:
+        type: string
+      empresa:
+        type: string
+      id:
+        type: integer
+      nombre:
+        type: string
+      telefono:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API de estudio conectada a PostgreSQL.
+  title: API de Clientes (PostgreSQL)
+  version: "1.0"
+paths:
+  /clientes:
+    get:
+      consumes:
+      - application/json
+      description: Obtiene todos los clientes o filtra por empresa
+      parameters:
+      - description: Filtrar por empresa
+        in: query
+        name: empresa
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/main.Cliente'
+            type: array
+      summary: Obtener clientes
+      tags:
+      - clientes
+    post:
+      consumes:
+      - application/json
+      description: Crea un nuevo cliente en Postgres
+      parameters:
+      - description: Datos del cliente
+        in: body
+        name: cliente
+        required: true
+        schema:
+          $ref: '#/definitions/main.Cliente'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/main.Cliente'
+      summary: Agregar un cliente
+      tags:
+      - clientes
+  /clientes/{id}:
+    delete:
+      parameters:
+      - description: ID del cliente
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Eliminar un cliente
+      tags:
+      - clientes
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID del cliente
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Nuevos datos
+        in: body
+        name: cliente
+        required: true
+        schema:
+          $ref: '#/definitions/main.Cliente'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Cliente'
+      summary: Actualizar un cliente
+      tags:
+      - clientes
+  /clientes/masivo:
+    post:
+      consumes:
+      - application/json
+      description: Inserta múltiples clientes en una sola transacción
+      parameters:
+      - description: Array de clientes
+        in: body
+        name: clientes
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/main.Cliente'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Agregar clientes masivamente
+      tags:
+      - clientes
+swagger: "2.0"
