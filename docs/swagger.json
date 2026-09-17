@@ -1,8 +1,8 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "API de estudio conectada a PostgreSQL.",
-        "title": "API de Clientes (PostgreSQL)",
+        "description": "API refactorizada usando MVC.",
+        "title": "API de Clientes (PostgreSQL Arquitectura por Capas)",
         "contact": {},
         "version": "1.0"
     },
@@ -11,10 +11,6 @@
     "paths": {
         "/clientes": {
             "get": {
-                "description": "Obtiene todos los clientes o filtra por empresa",
-                "consumes": [
-                    "application/json"
-                ],
                 "produces": [
                     "application/json"
                 ],
@@ -36,14 +32,13 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/main.Cliente"
+                                "$ref": "#/definitions/models.Cliente"
                             }
                         }
                     }
                 }
             },
             "post": {
-                "description": "Crea un nuevo cliente en Postgres",
                 "consumes": [
                     "application/json"
                 ],
@@ -61,7 +56,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/main.Cliente"
+                            "$ref": "#/definitions/models.Cliente"
                         }
                     }
                 ],
@@ -69,7 +64,7 @@
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/main.Cliente"
+                            "$ref": "#/definitions/models.Cliente"
                         }
                     }
                 }
@@ -77,7 +72,6 @@
         },
         "/clientes/masivo": {
             "post": {
-                "description": "Inserta múltiples clientes en una sola transacción",
                 "consumes": [
                     "application/json"
                 ],
@@ -87,7 +81,7 @@
                 "tags": [
                     "clientes"
                 ],
-                "summary": "Agregar clientes masivamente",
+                "summary": "Agregar masivo",
                 "parameters": [
                     {
                         "description": "Array de clientes",
@@ -97,7 +91,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/main.Cliente"
+                                "$ref": "#/definitions/models.Cliente"
                             }
                         }
                     }
@@ -128,18 +122,18 @@
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "ID del cliente",
+                        "description": "ID",
                         "name": "id",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "description": "Nuevos datos",
+                        "description": "Datos",
                         "name": "cliente",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/main.Cliente"
+                            "$ref": "#/definitions/models.Cliente"
                         }
                     }
                 ],
@@ -147,7 +141,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.Cliente"
+                            "$ref": "#/definitions/models.Cliente"
                         }
                     }
                 }
@@ -163,7 +157,7 @@
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "ID del cliente",
+                        "description": "ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -182,7 +176,7 @@
         }
     },
     "definitions": {
-        "main.Cliente": {
+        "models.Cliente": {
             "type": "object",
             "properties": {
                 "email": {

@@ -17,10 +17,6 @@ const docTemplate = `{
     "paths": {
         "/clientes": {
             "get": {
-                "description": "Obtiene todos los clientes o filtra por empresa",
-                "consumes": [
-                    "application/json"
-                ],
                 "produces": [
                     "application/json"
                 ],
@@ -42,14 +38,13 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/main.Cliente"
+                                "$ref": "#/definitions/models.Cliente"
                             }
                         }
                     }
                 }
             },
             "post": {
-                "description": "Crea un nuevo cliente en Postgres",
                 "consumes": [
                     "application/json"
                 ],
@@ -67,7 +62,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/main.Cliente"
+                            "$ref": "#/definitions/models.Cliente"
                         }
                     }
                 ],
@@ -75,7 +70,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/main.Cliente"
+                            "$ref": "#/definitions/models.Cliente"
                         }
                     }
                 }
@@ -83,7 +78,6 @@ const docTemplate = `{
         },
         "/clientes/masivo": {
             "post": {
-                "description": "Inserta múltiples clientes en una sola transacción",
                 "consumes": [
                     "application/json"
                 ],
@@ -93,7 +87,7 @@ const docTemplate = `{
                 "tags": [
                     "clientes"
                 ],
-                "summary": "Agregar clientes masivamente",
+                "summary": "Agregar masivo",
                 "parameters": [
                     {
                         "description": "Array de clientes",
@@ -103,7 +97,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/main.Cliente"
+                                "$ref": "#/definitions/models.Cliente"
                             }
                         }
                     }
@@ -134,18 +128,18 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "ID del cliente",
+                        "description": "ID",
                         "name": "id",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "description": "Nuevos datos",
+                        "description": "Datos",
                         "name": "cliente",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/main.Cliente"
+                            "$ref": "#/definitions/models.Cliente"
                         }
                     }
                 ],
@@ -153,7 +147,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.Cliente"
+                            "$ref": "#/definitions/models.Cliente"
                         }
                     }
                 }
@@ -169,7 +163,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "ID del cliente",
+                        "description": "ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -188,7 +182,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "main.Cliente": {
+        "models.Cliente": {
             "type": "object",
             "properties": {
                 "email": {
@@ -217,8 +211,8 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "localhost:8080",
 	BasePath:         "/",
 	Schemes:          []string{},
-	Title:            "API de Clientes (PostgreSQL)",
-	Description:      "API de estudio conectada a PostgreSQL.",
+	Title:            "API de Clientes (PostgreSQL Arquitectura por Capas)",
+	Description:      "API refactorizada usando MVC.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

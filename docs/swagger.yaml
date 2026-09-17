@@ -1,6 +1,6 @@
 basePath: /
 definitions:
-  main.Cliente:
+  models.Cliente:
     properties:
       email:
         type: string
@@ -16,15 +16,12 @@ definitions:
 host: localhost:8080
 info:
   contact: {}
-  description: API de estudio conectada a PostgreSQL.
-  title: API de Clientes (PostgreSQL)
+  description: API refactorizada usando MVC.
+  title: API de Clientes (PostgreSQL Arquitectura por Capas)
   version: "1.0"
 paths:
   /clientes:
     get:
-      consumes:
-      - application/json
-      description: Obtiene todos los clientes o filtra por empresa
       parameters:
       - description: Filtrar por empresa
         in: query
@@ -37,7 +34,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/main.Cliente'
+              $ref: '#/definitions/models.Cliente'
             type: array
       summary: Obtener clientes
       tags:
@@ -45,28 +42,27 @@ paths:
     post:
       consumes:
       - application/json
-      description: Crea un nuevo cliente en Postgres
       parameters:
       - description: Datos del cliente
         in: body
         name: cliente
         required: true
         schema:
-          $ref: '#/definitions/main.Cliente'
+          $ref: '#/definitions/models.Cliente'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/main.Cliente'
+            $ref: '#/definitions/models.Cliente'
       summary: Agregar un cliente
       tags:
       - clientes
   /clientes/{id}:
     delete:
       parameters:
-      - description: ID del cliente
+      - description: ID
         in: path
         name: id
         required: true
@@ -86,24 +82,24 @@ paths:
       consumes:
       - application/json
       parameters:
-      - description: ID del cliente
+      - description: ID
         in: path
         name: id
         required: true
         type: integer
-      - description: Nuevos datos
+      - description: Datos
         in: body
         name: cliente
         required: true
         schema:
-          $ref: '#/definitions/main.Cliente'
+          $ref: '#/definitions/models.Cliente'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.Cliente'
+            $ref: '#/definitions/models.Cliente'
       summary: Actualizar un cliente
       tags:
       - clientes
@@ -111,7 +107,6 @@ paths:
     post:
       consumes:
       - application/json
-      description: Inserta múltiples clientes en una sola transacción
       parameters:
       - description: Array de clientes
         in: body
@@ -119,7 +114,7 @@ paths:
         required: true
         schema:
           items:
-            $ref: '#/definitions/main.Cliente'
+            $ref: '#/definitions/models.Cliente'
           type: array
       produces:
       - application/json
@@ -129,7 +124,7 @@ paths:
           schema:
             additionalProperties: true
             type: object
-      summary: Agregar clientes masivamente
+      summary: Agregar masivo
       tags:
       - clientes
 swagger: "2.0"
