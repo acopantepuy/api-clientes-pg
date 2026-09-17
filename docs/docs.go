@@ -47,7 +47,7 @@ const docTemplate = `{
             "post": {
                 "security": [
                     {
-                        "ApiKeyAuth  \u003c-- NUEVA LÍNEA AÑADIDA": []
+                        "ApiKeyAuth": []
                     }
                 ],
                 "consumes": [
@@ -91,7 +91,7 @@ const docTemplate = `{
             "post": {
                 "security": [
                     {
-                        "ApiKeyAuth  \u003c-- NUEVA LÍNEA AÑADIDA": []
+                        "ApiKeyAuth": []
                     }
                 ],
                 "consumes": [
@@ -139,7 +139,7 @@ const docTemplate = `{
             "put": {
                 "security": [
                     {
-                        "ApiKeyAuth  \u003c-- NUEVA LÍNEA AÑADIDA": []
+                        "ApiKeyAuth": []
                     }
                 ],
                 "consumes": [
@@ -188,7 +188,7 @@ const docTemplate = `{
             "delete": {
                 "security": [
                     {
-                        "ApiKeyAuth  \u003c-- NUEVA LÍNEA AÑADIDA": []
+                        "ApiKeyAuth": []
                     }
                 ],
                 "produces": [

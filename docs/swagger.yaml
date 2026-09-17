@@ -73,7 +73,7 @@ paths:
           schema:
             $ref: '#/definitions/utils.APIError'
       security:
-      - ApiKeyAuth  <-- NUEVA LÍNEA AÑADIDA: []
+      - ApiKeyAuth: []
       summary: Agregar un cliente
       tags:
       - clientes
@@ -98,7 +98,7 @@ paths:
           schema:
             $ref: '#/definitions/utils.APIError'
       security:
-      - ApiKeyAuth  <-- NUEVA LÍNEA AÑADIDA: []
+      - ApiKeyAuth: []
       summary: Eliminar un cliente
       tags:
       - clientes
@@ -129,7 +129,7 @@ paths:
           schema:
             $ref: '#/definitions/utils.APIError'
       security:
-      - ApiKeyAuth  <-- NUEVA LÍNEA AÑADIDA: []
+      - ApiKeyAuth: []
       summary: Actualizar un cliente
       tags:
       - clientes
@@ -159,7 +159,7 @@ paths:
           schema:
             $ref: '#/definitions/utils.APIError'
       security:
-      - ApiKeyAuth  <-- NUEVA LÍNEA AÑADIDA: []
+      - ApiKeyAuth: []
       summary: Agregar masivo
       tags:
       - clientes

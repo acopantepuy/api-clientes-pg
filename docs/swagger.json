@@ -41,7 +41,7 @@
             "post": {
                 "security": [
                     {
-                        "ApiKeyAuth  \u003c-- NUEVA LÍNEA AÑADIDA": []
+                        "ApiKeyAuth": []
                     }
                 ],
                 "consumes": [
@@ -85,7 +85,7 @@
             "post": {
                 "security": [
                     {
-                        "ApiKeyAuth  \u003c-- NUEVA LÍNEA AÑADIDA": []
+                        "ApiKeyAuth": []
                     }
                 ],
                 "consumes": [
@@ -133,7 +133,7 @@
             "put": {
                 "security": [
                     {
-                        "ApiKeyAuth  \u003c-- NUEVA LÍNEA AÑADIDA": []
+                        "ApiKeyAuth": []
                     }
                 ],
                 "consumes": [
@@ -182,7 +182,7 @@
             "delete": {
                 "security": [
                     {
-                        "ApiKeyAuth  \u003c-- NUEVA LÍNEA AÑADIDA": []
+                        "ApiKeyAuth": []
                     }
                 ],
                 "produces": [

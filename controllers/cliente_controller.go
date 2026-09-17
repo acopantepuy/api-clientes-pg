@@ -38,7 +38,7 @@ func GetClientes(c *gin.Context) {
 // @Success 201 {object} models.Cliente
 // @Failure 400 {object} utils.APIError  <-- Swagger ahora sabe que el error 400 usa esta estructura
 // @Router /clientes [post]
-// @Security ApiKeyAuth  <-- NUEVA LÍNEA AÑADIDA
+// @Security ApiKeyAuth
 func CreateCliente(c *gin.Context) {
 	var cliente models.Cliente
 	if err := c.ShouldBindJSON(&cliente); err != nil {
@@ -63,7 +63,7 @@ func CreateCliente(c *gin.Context) {
 // @Success 201 {object} map[string]interface{}
 // @Failure 400 {object} utils.APIError  <-- Swagger ahora sabe que el error 400 usa esta estructura
 // @Router /clientes/masivo [post]
-// @Security ApiKeyAuth  <-- NUEVA LÍNEA AÑADIDA
+// @Security ApiKeyAuth
 func CreateClientesMasivo(c *gin.Context) {
 	var clientes []models.Cliente
 	if err := c.ShouldBindJSON(&clientes); err != nil {
@@ -89,7 +89,7 @@ func CreateClientesMasivo(c *gin.Context) {
 // @Success 200 {object} models.Cliente
 // @Failure 400 {object} utils.APIError  <-- Swagger ahora sabe que el error 400 usa esta estructura
 // @Router /clientes/{id} [put]
-// @Security ApiKeyAuth  <-- NUEVA LÍNEA AÑADIDA
+// @Security ApiKeyAuth
 func UpdateCliente(c *gin.Context) {
 	id := c.Param("id")
 	var cliente models.Cliente
@@ -124,7 +124,7 @@ func UpdateCliente(c *gin.Context) {
 // @Success 200 {object} map[string]interface{}
 // @Failure 400 {object} utils.APIError  <-- Swagger ahora sabe que el error 400 usa esta estructura
 // @Router /clientes/{id} [delete]
-// @Security ApiKeyAuth  <-- NUEVA LÍNEA AÑADIDA
+// @Security ApiKeyAuth
 func DeleteCliente(c *gin.Context) {
 	id := c.Param("id")
 	if err := models.DB.Delete(&models.Cliente{}, id).Error; err != nil {

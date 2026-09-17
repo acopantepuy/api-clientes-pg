@@ -8,7 +8,7 @@ import (
 
 	"github.com/joho/godotenv"
 
-	_ "api-clientes-pg/docs" // Necesario para Swagger
+	_ "api-clientes-pg/docs"
 )
 
 // @title API de Clientes (PostgreSQL Arquitectura por Capas)
@@ -19,6 +19,7 @@ import (
 // @securityDefinitions.apikey ApiKeyAuth
 // @in header
 // @name X-API-Key
+
 func main() {
 	// 1. Cargar variables de entorno
 	if err := godotenv.Load(); err != nil {
