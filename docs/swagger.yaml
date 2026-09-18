@@ -25,6 +25,22 @@ definitions:
         example: 400
         type: integer
     type: object
+  utils.PaginatedResponse:
+    properties:
+      data: {}
+      limit:
+        example: 10
+        type: integer
+      page:
+        example: 1
+        type: integer
+      total:
+        example: 50
+        type: integer
+      total_pages:
+        example: 5
+        type: integer
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -39,15 +55,21 @@ paths:
         in: query
         name: empresa
         type: string
+      - description: 'Número de página (default: 1)'
+        in: query
+        name: page
+        type: integer
+      - description: 'Cantidad por página (default: 10)'
+        in: query
+        name: limit
+        type: integer
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/models.Cliente'
-            type: array
+            $ref: '#/definitions/utils.PaginatedResponse'
       summary: Obtener clientes
       tags:
       - clientes

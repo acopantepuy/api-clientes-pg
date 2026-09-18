@@ -24,16 +24,25 @@
                         "description": "Filtrar por empresa",
                         "name": "empresa",
                         "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Número de página (default: 1)",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Cantidad por página (default: 10)",
+                        "name": "limit",
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.Cliente"
-                            }
+                            "$ref": "#/definitions/utils.PaginatedResponse"
                         }
                     }
                 }
@@ -254,6 +263,28 @@
                 "status": {
                     "type": "integer",
                     "example": 400
+                }
+            }
+        },
+        "utils.PaginatedResponse": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "limit": {
+                    "type": "integer",
+                    "example": 10
+                },
+                "page": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "total": {
+                    "type": "integer",
+                    "example": 50
+                },
+                "total_pages": {
+                    "type": "integer",
+                    "example": 5
                 }
             }
         }

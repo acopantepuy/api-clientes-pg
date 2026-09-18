@@ -1,7 +1,9 @@
 package controllers
 
 import (
+	"math"
 	"net/http"
+	"strconv"
 
 	"api-clientes-pg/models" // Importamos nuestros modelos
 	"api-clientes-pg/utils"
@@ -14,19 +16,54 @@ import (
 // @Tags clientes
 // @Produce json
 // @Param empresa query string false "Filtrar por empresa"
-// @Success 200 {array} models.Cliente
+// @Param page query int false "Número de página (default: 1)"
+// @Param limit query int false "Cantidad por página (default: 10)"
+// @Success 200 {object} utils.PaginatedResponse
 // @Router /clientes [get]
 func GetClientes(c *gin.Context) {
 	var clientes []models.Cliente
 	empresa := c.Query("empresa")
 
-	query := models.DB
+	// 1. Obtener parámetros de paginación de la URL (con valores por defecto)
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))
+
+	// Evitar números negativos o ceros que rompan la base de datos
+	if page < 1 {
+		page = 1
+	}
+	if limit < 1 {
+		limit = 10
+	}
+
+	// 2. Calcular el Offset matemático
+	// Ejemplo: Si estoy en la página 3 y el límite es 10, me salto (3-1)*10 = 20 registros
+	offset := (page - 1) * limit
+
+	// 3. Preparar la consulta base
+	query := models.DB.Model(&models.Cliente{})
 	if empresa != "" {
 		query = query.Where("empresa = ?", empresa)
 	}
 
-	query.Find(&clientes)
-	c.JSON(http.StatusOK, clientes)
+	// 4. Contar el total de registros (ANTES de aplicar límite y offset)
+	var total int64
+	query.Count(&total)
+
+	// 5. Ejecutar la búsqueda final con Limit y Offset
+	query.Limit(limit).Offset(offset).Find(&clientes)
+
+	// 6. Calcular el total de páginas usando math.Ceil (redondeo hacia arriba)
+	totalPages := int(math.Ceil(float64(total) / float64(limit)))
+
+	// 7. Retornar la respuesta estructurada
+	c.JSON(http.StatusOK, utils.PaginatedResponse{
+		Data:       clientes,
+		Total:      total,
+		Page:       page,
+		Limit:      limit,
+		TotalPages: totalPages,
+	})
 }
 
 // CreateCliente godoc
