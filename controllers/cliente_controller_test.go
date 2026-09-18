@@ -1,11 +1,14 @@
 package controllers
 
 import (
+	"bytes"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 
+	"api-clientes-pg/middlewares" // Importamos el middleware
 	"api-clientes-pg/models"
 	"api-clientes-pg/utils"
 
@@ -23,6 +26,9 @@ func setupTestDB() {
 	}
 
 	db.AutoMigrate(&models.Cliente{})
+	// Limpia los registros previos entre ejecuciones de tests
+	db.Exec("DELETE FROM clientes")
+
 	models.DB = db // Reemplazamos la conexión global por esta falsa
 }
 
@@ -74,5 +80,85 @@ func TestGetClientes(t *testing.T) {
 	// C. Validar que la API realmente devuelva los 2 registros que insertamos
 	if response.Total != 2 {
 		t.Errorf("Se esperaba un Total de 2, pero devolvió %d", response.Total)
+	}
+}
+
+func TestCreateCliente_Exito(t *testing.T) {
+	gin.SetMode(gin.TestMode)
+	setupTestDB()
+
+	// 1. Configuramos la variable de entorno solo para esta prueba
+	os.Setenv("API_KEY", "clave_secreta_test")
+	defer os.Unsetenv("API_KEY") // Asegura que se borre al terminar la prueba
+
+	// 2. Levantamos el router INCLUYENDO el middleware
+	r := gin.Default()
+	r.Use(middlewares.APIKeyMiddleware())
+	r.POST("/clientes", CreateCliente)
+
+	// 3. Preparamos los datos del nuevo cliente en JSON
+	payload := []byte(`{
+        "nombre": "Carlos Dev",
+        "email": "carlos@test.com",
+        "empresa": "Tech Solutions"
+    }`)
+
+	// 4. Creamos la petición enviando el payload (usando bytes.NewBuffer)
+	req, _ := http.NewRequest(http.MethodPost, "/clientes", bytes.NewBuffer(payload))
+
+	// 5. ¡LA MAGIA! Inyectamos los Headers
+	req.Header.Set("Content-Type", "application/json") // Avisamos que enviamos un JSON
+	req.Header.Set("X-API-Key", "clave_secreta_test")  // Pasamos el middleware
+
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+
+	// --- VALIDACIONES ---
+
+	// A. Validar que la respuesta sea 201 Created
+	if w.Code != http.StatusCreated {
+		t.Errorf("Se esperaba 201, se obtuvo %d", w.Code)
+	}
+
+	// B. Validar que realmente se guardó en la base de datos de pruebas
+	var count int64
+	models.DB.Model(&models.Cliente{}).Count(&count)
+	if count != 1 {
+		t.Errorf("Se esperaba 1 cliente en la BD, pero hay %d", count)
+	}
+}
+
+func TestCreateCliente_FalloAutenticacion(t *testing.T) {
+	gin.SetMode(gin.TestMode)
+	setupTestDB()
+
+	os.Setenv("API_KEY", "clave_secreta_test")
+	defer os.Unsetenv("API_KEY")
+
+	r := gin.Default()
+	r.Use(middlewares.APIKeyMiddleware())
+	r.POST("/clientes", CreateCliente)
+
+	payload := []byte(`{"nombre": "Hacker", "email": "hacker@test.com"}`)
+	req, _ := http.NewRequest(http.MethodPost, "/clientes", bytes.NewBuffer(payload))
+
+	// Enviamos el Content-Type, pero NO enviamos el X-API-Key
+	req.Header.Set("Content-Type", "application/json")
+
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+
+	// --- VALIDACIONES ---
+
+	// A. Validar que el servidor nos rechace con 401 Unauthorized
+	if w.Code != http.StatusUnauthorized {
+		t.Errorf("Se esperaba que el servidor rechazara con 401, pero devolvió %d", w.Code)
+	}
+
+	// B. Validar que NO se guardó nada en la base de datos
+	var count int64
+	models.DB.Model(&models.Cliente{}).Count(&count)
+	if count != 0 {
+		t.Errorf("El cliente se guardó en BD saltándose la seguridad. Registros: %d", count)
 	}
 }
