@@ -1,0 +1,6 @@
+# Archivos que docker debe ignorar al construir la imagen
+.env
+.git
+.github
+**/*_test.go
+clientes.db

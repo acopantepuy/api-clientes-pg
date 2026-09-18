@@ -1445,7 +1445,7 @@ En la misma carpeta raíz, crea un archivo llamado exactamente `Dockerfile` (sin
 # ETAPA 1: Constructor (Builder)
 # ==========================================
 # Usamos la imagen oficial de Go basada en Alpine (ligera)
-FROM golang:1.22-alpine AS builder
+FROM golang:1.26.3-alpine AS builder
 
 # Creamos y nos movemos a la carpeta /app dentro del contenedor
 WORKDIR /app
