@@ -1,0 +1,31 @@
+name: Pruebas Unitarias Go
+
+# 1. ¿Cuándo se va a ejecutar este robot?
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request: # También se ejecuta cuando alguien propone un cambio (PR)
+    branches: [ "main", "master" ]
+
+# 2. ¿Qué trabajos va a realizar?
+jobs:
+  test:
+    name: Ejecutar Tests
+    runs-on: ubuntu-latest # Una máquina virtual gratuita de Linux
+
+    # 3. Paso a paso de lo que hará la máquina
+    steps:
+    - name: Clonar el repositorio
+      uses: actions/checkout@v4
+
+    - name: Configurar Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.26.3' # Pon aquí la versión de Go que tengas en tu go.mod
+
+    - name: Descargar dependencias
+      run: go mod download
+
+    - name: Ejecutar Pruebas Unitarias
+      # ./... significa "busca pruebas en todas las carpetas del proyecto"
+      run: go test -v ./...
