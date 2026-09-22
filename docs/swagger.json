@@ -1,8 +1,8 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "API refactorizada usando MVC.",
-        "title": "API de Clientes (PostgreSQL Arquitectura por Capas)",
+        "description": "API usando MVC.",
+        "title": "API de Clientes (Arquitectura por Capas)",
         "contact": {},
         "version": "1.0"
     },

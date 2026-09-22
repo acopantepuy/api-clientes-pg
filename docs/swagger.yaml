@@ -44,8 +44,8 @@ definitions:
 host: localhost:8080
 info:
   contact: {}
-  description: API refactorizada usando MVC.
-  title: API de Clientes (PostgreSQL Arquitectura por Capas)
+  description: API usando MVC.
+  title: API de Clientes (Arquitectura por Capas)
   version: "1.0"
 paths:
   /clientes:
