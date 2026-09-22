@@ -1,31 +1,59 @@
-name: Pruebas Unitarias Go
+name: Pruebas Unitarias y Despliegue
 
-# 1. ¿Cuándo se va a ejecutar este robot?
 on:
   push:
-    branches: [ "main", "master" ]
-  pull_request: # También se ejecuta cuando alguien propone un cambio (PR)
-    branches: [ "main", "master" ]
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
-# 2. ¿Qué trabajos va a realizar?
 jobs:
+  # ==========================================
+  # TRABAJO 1: PRUEBAS (Integración Continua)
+  # ==========================================
   test:
     name: Ejecutar Tests
-    runs-on: ubuntu-latest # Una máquina virtual gratuita de Linux
+    runs-on: ubuntu-latest
+    steps:
+    - name: Clonar el repositorio
+      uses: actions/checkout@v4
+      
+    - name: Configurar Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.22'
+        
+    - name: Descargar dependencias
+      run: go mod download
+      
+    - name: Ejecutar Pruebas Unitarias
+      run: go test -v ./...
 
-    # 3. Paso a paso de lo que hará la máquina
+  # ==========================================
+  # TRABAJO 2: DOCKER (Entrega Continua)
+  # ==========================================
+  build-and-push:
+    name: Construir y Subir a Docker Hub
+    needs: test # ¡LA MAGIA! Solo arranca si "test" terminó en verde
+    runs-on: ubuntu-latest
+    
+    # Opcional pero recomendado: Solo publicar si el cambio ocurre en la rama 'main'
+    if: github.ref == 'refs/heads/main'
+
     steps:
     - name: Clonar el repositorio
       uses: actions/checkout@v4
 
-    - name: Configurar Go
-      uses: actions/setup-go@v5
+    - name: Iniciar sesión en Docker Hub
+      uses: docker/login-action@v3
       with:
-        go-version: '1.26.3' # Pon aquí la versión de Go que tengas en tu go.mod
+        # Aquí GitHub inyecta los secretos que guardaste en el Paso 1
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_TOKEN }}
 
-    - name: Descargar dependencias
-      run: go mod download
-
-    - name: Ejecutar Pruebas Unitarias
-      # ./... significa "busca pruebas en todas las carpetas del proyecto"
-      run: go test -v ./...
+    - name: Construir y Subir imagen
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: true
+        # Etiquetamos la imagen dinámicamente con tu usuario
+        tags: ${{ secrets.DOCKER_USERNAME }}/api-clientes-go:latest
