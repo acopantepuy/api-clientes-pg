@@ -6,9 +6,9 @@ services:
     image: postgres:15-alpine
     container_name: postgres-clientes
     environment:
-      POSTGRES_USER: usuario
-      POSTGRES_PASSWORD: secreto
-      POSTGRES_DB: clientes_db
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     ports:
       - "5436:5432"
     volumes:
@@ -27,11 +27,11 @@ services:
       # Ya no usamos "localhost". Usamos el nombre del servicio ("db")
       # Docker tiene un DNS interno que resuelve "db" a la IP del contenedor de Postgres.
       DB_HOST: db
-      DB_USER: usuario
-      DB_PASSWORD: secreto
-      DB_NAME: clientes_db
-      DB_PORT: 5432
-      API_KEY: secreto123
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_PORT: ${DB_PORT}
+      API_KEY: ${API_KEY}
     depends_on:
       - db # Espera a que el contenedor 'db' se inicie antes de levantar la API
     restart: unless-stopped
