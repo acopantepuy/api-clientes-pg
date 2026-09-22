@@ -11,7 +11,7 @@ import (
 	_ "api-clientes-pg/docs"
 )
 
-// @title API de Clientes (PostgreSQL Arquitectura por Capas)
+// @title API de Clientes (Arquitectura por Capas)
 // @version 1.0
 // @description API refactorizada usando MVC.
 // @host localhost:8080
