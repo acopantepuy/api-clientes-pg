@@ -13,7 +13,7 @@ import (
 
 // @title API de Clientes (Arquitectura por Capas)
 // @version 1.0
-// @description API refactorizada usando MVC.
+// @description API usando MVC.
 // @host localhost:8080
 // @BasePath /
 // @securityDefinitions.apikey ApiKeyAuth
