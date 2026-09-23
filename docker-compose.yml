@@ -21,6 +21,7 @@ services:
     build: . # Le dice que busque el Dockerfile en esta misma carpeta y lo compile
     container_name: api-clientes-go
     ports:
+      - "8443:8443"
       - "8080:8080"
     environment:
       # ¡ATENCIÓN JUNIOR! Aquí ocurre la magia de Docker.
@@ -32,6 +33,15 @@ services:
       DB_NAME: ${DB_NAME}
       DB_PORT: ${DB_PORT}
       API_KEY: ${API_KEY}
+      SSL_ENABLED: ${SSL_ENABLED}
+      SSL_CERT_PATH: ${SSL_CERT_PATH}
+      SSL_KEY_PATH: ${SSL_KEY_PATH}
+      APP_HOST: ${APP_HOST}
+      SSL_PORT: ${SSL_PORT}
+    volumes:
+      # Montamos el directorio de certificados SSL en el contenedor
+      - ./certs/cert.crt:/app/certs/cert.crt:ro
+      - ./certs/private.key:/app/certs/private.key:ro
     depends_on:
       - db # Espera a que el contenedor 'db' se inicie antes de levantar la API
     restart: unless-stopped
