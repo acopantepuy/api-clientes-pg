@@ -21,7 +21,7 @@ services:
     build: . # Le dice que busque el Dockerfile en esta misma carpeta y lo compile
     container_name: api-clientes-go
     ports:
-      - "8443:8443"
+      - "443:443"
       - "8080:8080"
     environment:
       # ¡ATENCIÓN JUNIOR! Aquí ocurre la magia de Docker.
